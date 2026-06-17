@@ -1,0 +1,32 @@
+<div id="manualMode" class="card" style="display: none;">
+    <div class="header">
+        <b>Xin chào, {{ username }}</b> <a href="/logout" class="logout">Thoát</a>
+    </div>
+    <h3>Bản Đồ LED Của Bạn</h3>
+    <div class="grid" id="ledGrid"></div>
+    <div class="controls">
+        <label>Độ sáng: <b id="val" style="color:#007bff">100</b>%</label>
+        <input type="range" id="slider" min="1" max="100" value="100">
+    </div>
+    <button class="btn-send" onclick="sendData()">GỬI LỆNH THỦ CÔNG</button>
+    <button class="btn-clear" onclick="clearGrid()">Tắt Hết Mặt Nạ</button>
+
+    <div class="controls" style="margin-top: 15px; background: #e9ecef; text-align: left;">
+        <h4 style="margin: 0 0 10px 0;">Hẹn Giờ Tắt Mặt Nạ</h4>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <select id="timerSelect"
+                style="padding: 10px; border-radius: 8px; border: 1px solid #ccc; flex: 1; font-weight: bold;">
+                <option value="1">1 Phút</option>
+                <option value="5">5 Phút</option>
+                <option value="10">10 Phút</option>
+                <option value="12">12 Phút</option>
+                <option value="15">15 Phút</option>
+                <option value="20">20 Phút</option>
+            </select>
+            <button class="btn-send" id="btnStartTimer" onclick="batDauHenGio()"
+                style="margin: 0; background: #28a745; width: auto; padding: 10px 15px;">Bắt Đầu</button>
+        </div>
+        <h1 id="timerDisplay"
+            style="color: #dc3545; text-align: center; margin-top: 15px; display: none; font-size: 40px;">00:00</h1>
+    </div>
+</div>

@@ -1,0 +1,26 @@
+<div id="autoMode" class="card">
+    <div class="header">
+        <b>Xin chào, {{ username }}</b> <a href="/logout" class="logout">Thoát</a>
+    </div>
+
+    <div class="camera-container">
+        <video id="videoElement" autoplay playsinline></video>
+        <img id="previewImage">
+        <div class="camera-guide-overlay"></div>
+    </div>
+    <div class="button-group">
+        <button class="btn-send" onclick="moCamera()" style="background: #28a745;">Mở Camera</button>
+        <button class="btn-send" onclick="document.getElementById('fileUpload').click()"
+            style="background: #17a2b8;">Tải Ảnh</button>
+    </div>
+    <input type="file" id="fileUpload" accept="image/*" style="display: none;" onchange="taiAnhLen(event)">
+
+    <button class="btn-clear" onclick="xuLyAnh()" style="background:#ffc107; color:#000;">Phân tích & Bật Mặt
+        Nạ</button>
+
+    <h4 style="margin-top: 25px; text-align: left;">Kết quả của bạn:</h4>
+    <img id="resultImage" style="width: 100%; border-radius: 10px; border: 2px dashed #ccc; min-height: 150px;">
+    <a id="downloadBtn" style="display: none; margin-top: 10px;" class="btn-clear" download="ket_qua.png">⬇️ Tải ảnh về
+        máy</a>
+    <canvas id="canvasElement" style="display: none;"></canvas>
+</div>

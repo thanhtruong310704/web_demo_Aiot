@@ -1,0 +1,85 @@
+<div id="deviceMode" style="display: none; width: 100%; max-width: 450px;">
+        
+    <div class="card" style="position: relative; padding: 25px; text-align: center; border-radius: 20px; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden;">
+        <div class="header">
+            <b>Xin chào, {{ username }}</b> <a href="/logout" class="logout">Thoát</a>
+        </div>
+        
+        <h3 style="margin-top: 0; color: #444;">QUẢN LÝ MẶT NẠ</h3>
+
+        {% if device_id %}
+        <div style="width: 75px; height: 75px; background-color: #68ed80; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#165b26" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        
+        <h2 style="color: #128e41; font-size: 22px; font-weight: bold; margin: 0 0 8px 0;">Đã Kết Nối Thành Công!</h2>
+        <p style="color: #777; font-size: 13px; margin: 0 0 25px 0;">Thiết bị đang hoạt động</p>
+        
+        <div style="background-color: #f4f6fb; border-radius: 12px; padding: 18px; margin-bottom: 25px;">
+            <div style="font-size: 11px; font-weight: bold; color: #128e41; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px;">MÃ THIẾT BỊ</div>
+            <div style="font-size: 14px; color: #333; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#128e41" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path><line x1="9" y1="14" x2="15" y2="14"></line></svg>
+                Mặt nạ hiện tại của bạn: <span style="color: #128e41; font-weight: bold;">{{ device_id }}</span>
+            </div>
+        </div>
+        <div id="otaAlertBox" style="display: none; background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px; margin-bottom: 15px; border-radius: 8px; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <p style="margin: 0 0 5px 0; color: #856404; font-weight: bold; font-size: 14px;">⚠️ Có bản Firmware mới: <span id="valNewFirmware"></span></p>
+            <p style="margin: 0; font-size: 12px; color: #666;">Vui lòng nhấn "Nâng cấp phần mềm" để tiến hành cài đặt.</p>
+        </div>
+        <button onclick="kichHoatOTA()" style="background-color: #117832; color: white; border: none; border-radius: 30px; padding: 14px 20px; width: 100%; font-weight: bold; font-size: 15px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+            Nâng cấp phần mềm (OTA)
+        </button>
+        
+        
+        <button onclick="unbindDevice()" style="background-color: transparent; color: #dc3545; border: none; padding: 12px; width: 100%; font-weight: 500; font-size: 14px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+            Ngắt kết nối / Đổi thiết bị
+        </button>
+        
+        <div style="height: 5px; background: linear-gradient(90deg, #007bff, #20c997); position: absolute; bottom: 0; left: 0; right: 0;"></div>
+
+        {% else %}
+        <div class="status-icon-wrapper" style="margin-bottom: 20px;">
+            <div class="icon-circle" style="width: 65px; height: 65px; background: linear-gradient(135deg, #dc3545, #ff4d5a); margin: 0 auto; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white;">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </div>
+        </div>
+
+        <div id="device-binding-section" style="border: 2px dashed #007bff; padding: 15px; border-radius: 10px; background-color: #f8faff; text-align: left;">
+            <h4 style="margin: 0 0 5px 0; color: #0056b3;">Liên Kết Thiết Bị Mới</h4>
+            <p style="font-size: 13px; color: #555; margin-bottom: 15px;">Nhập mã thiết bị và PIN đi kèm trong hộp để có quyền điều khiển mặt nạ.</p>
+            
+            <label style="font-size: 12px; font-weight: bold; color: #333;">Mã Thiết Bị</label>
+            <input type="text" id="deviceIdInput" placeholder="VD: MAC_A1B2C3" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;">
+            
+            <label style="font-size: 12px; font-weight: bold; color: #333;">Mã PIN</label>
+            <input type="password" id="pinInput" placeholder="Nhập PIN" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;">
+            
+            <button onclick="bindDevice()" style="width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 15px;">
+                Xác nhận kết nối
+            </button>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if device_id %}
+    <div class="stats-row" style="display: flex; gap: 10px; margin-top: 15px;">
+        <div class="stat-card" style="flex: 1; background: white; border-radius: 12px; padding: 15px; text-align: left; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+            <div style="color: #0d6efd; margin-bottom: 8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="18" height="12" rx="2" ry="2"></rect><line x1="23" y1="13" x2="23" y2="11"></line></svg></div>
+            <p id="stat-battery" style="font-size: 18px; font-weight: bold; margin: 0;">{{ battery }}%</p>
+            <p style="font-size: 10px; color: #777; margin: 0;">Dung lượng pin hiện tại</p>
+        </div>
+        <div class="stat-card" style="flex: 1; background: white; border-radius: 12px; padding: 15px; text-align: left; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+            <div style="color: #0d6efd; margin-bottom: 8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div>
+            <p id="stat-last-used" style="font-size: 18px; font-weight: bold; margin: 0;">{{ last_used }}</p>
+            <p style="font-size: 10px; color: #777; margin: 0;">Lần sử dụng gần nhất</p>
+        </div>
+        <div class="stat-card" style="flex: 1; background: white; border-radius: 12px; padding: 15px; text-align: left; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+            <div style="color: #0d6efd; margin-bottom: 8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
+            <p id="stat-firmware" style="font-size: 18px; font-weight: bold; margin: 0;">{{ firmware }}</p>
+            <p style="font-size: 10px; color: #777; margin: 0;">Phiên bản Firmware</p>
+        </div>
+    </div>
+    {% endif %}
+</div>

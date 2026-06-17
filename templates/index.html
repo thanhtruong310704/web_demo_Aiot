@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mặt Nạ LED Thông Minh</title>
+    <!-- Nhúng thư viện Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Nhúng CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- Thanh Menu Tabs -->
+    <div class="tab-container">
+        <button id="btnAuto" class="tab-btn active" onclick="switchTab('auto')">Quét Ảnh</button>
+        <button id="btnRegimen" class="tab-btn" onclick="switchTab('regimen')">Phác Đồ</button>
+        <button id="btnManual" class="tab-btn" onclick="switchTab('manual')">Thủ Công</button>
+        <button id="btnHistory" class="tab-btn" onclick="switchTab('history'); taiLichSu();">Lịch Sử</button>
+        <button id="btnDevice" class="tab-btn" onclick="switchTab('device')">Thiết Bị</button>
+    </div>
+
+    <!-- Nhúng các tab nội dung -->
+    {% include 'partials/_tab_auto.html' %}
+    {% include 'partials/_tab_regimen.html' %}
+    {% include 'partials/_tab_manual.html' %}
+    {% include 'partials/_tab_history.html' %}
+    {% include 'partials/_tab_device.html' %}
+
+    <!-- Nhúng Modal ẩn -->
+    {% include 'partials/_modal.html' %}
+
+    <!-- Nhúng JavaScript -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/control.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/camera.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/history.js') }}"></script>
+</body>
+
+</html>

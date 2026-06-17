@@ -1,0 +1,69 @@
+<div id="regimenMode" class="card" style="display: none;">
+    <div class="header">
+        <b>Xin chào, {{ username }}</b> <a href="/logout" class="logout">Thoát</a>
+    </div>
+    <h3 style="margin-bottom: 5px;">Chọn Phác Đồ Chăm Sóc</h3>
+    <p style="font-size: 13px; color: #666; margin: 0;">Mặt nạ sẽ tự động tắt sau thời gian chọn</p>
+
+    <div class="controls" style="margin-top: 15px; padding: 10px 15px; text-align: left; background: #f8f9fa;">
+        <label
+            style="display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 14px; cursor: pointer;"></label>
+    </div>
+    <div class="regimen-grid">
+        <div class="regimen-card" onclick="chayPhacDo('trimun')">
+            <div class="regimen-circle" style="background: #007bff;"></div>
+            <h4 class="regimen-title">Trị Mụn</h4>
+            <p class="regimen-desc">Kháng khuẩn, giảm viêm</p>
+            <div class="regimen-time"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg> 15 phút</div>
+            <div class="regimen-light-label">
+                <div class="regimen-dot" style="background: #007bff;"></div> Ánh sáng xanh dương
+            </div>
+        </div>
+
+        <div class="regimen-card" onclick="chayPhacDo('chonglaohoa')">
+            <div class="regimen-circle" style="background: #dc3545;"></div>
+            <h4 class="regimen-title">Chống Lão Hóa</h4>
+            <p class="regimen-desc">Tăng sinh collagen</p>
+            <div class="regimen-time"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg> 20 phút</div>
+            <div class="regimen-light-label">
+                <div class="regimen-dot" style="background: #dc3545;"></div> Ánh sáng đỏ
+            </div>
+        </div>
+
+        <div class="regimen-card" onclick="chayPhacDo('thugian')">
+            <div class="regimen-circle" style="background: #21d609;"></div>
+            <h4 class="regimen-title">Thư Giãn</h4>
+            <p class="regimen-desc">Làm dịu, giảm căng thẳng</p>
+            <div class="regimen-time"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg> 10 phút</div>
+            <div class="regimen-light-label">
+                <div class="regimen-dot" style="background: #21d609;"></div> Ánh sáng xanh lá
+            </div>
+        </div>
+
+        <div class="regimen-card" onclick="chayPhacDo('sanchac')">
+            <div class="regimen-circle" style="background: #ffc107;"></div>
+            <h4 class="regimen-title">Săn Chắc Da</h4>
+            <p class="regimen-desc">Kích thích tuần hoàn</p>
+            <div class="regimen-time"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg> 12 phút</div>
+            <div class="regimen-light-label">
+                <div class="regimen-dot" style="background: #ffc107;"></div> Ánh sáng vàng
+            </div>
+        </div>
+    </div>
+</div>

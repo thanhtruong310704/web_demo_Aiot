@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Quản Lý Y Tế - Mặt Nạ LED</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Tông màu Y tế: Xanh Blue trầm (#005b96), Nền sáng (#f0f4f8) */
+        :root {
+            --primary-medical: #005b96;
+            --secondary-medical: #0073e6;
+            --bg-color: #f0f4f8;
+            --text-dark: #2c3e50;
+            --text-muted: #6c757d;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+
+        .header-bar {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 91, 150, 0.08);
+            margin-bottom: 5px;
+            border-left: 6px solid var(--primary-medical);
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 91, 150, 0.05);
+            margin-bottom: 20px;
+            border: 1px solid #e1e8ed;
+        }
+
+        h2,
+        h3 {
+            margin-top: 0;
+            color: var(--primary-medical);
+        }
+
+        /* Bảng Danh Sách & Tìm Kiếm */
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cdd5dc;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            outline-color: var(--secondary-medical);
+        }
+
+        .patient-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .patient-item {
+            padding: 15px;
+            border: 1px solid #e1e8ed;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fafcff;
+        }
+
+        .patient-item:hover,
+        .patient-item.active {
+            background: #eef5fb;
+            border-color: var(--secondary-medical);
+        }
+
+        .p-name {
+            font-weight: bold;
+            font-size: 16px;
+            margin: 0;
+            color: var(--primary-medical);
+        }
+
+        .p-device {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 5px 0 0 0;
+        }
+
+        .btn-view {
+            background: var(--secondary-medical);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .btn-view:hover {
+            background: var(--primary-medical);
+        }
+
+        /* Form OTA */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cdd5dc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        .btn-submit {
+            background: var(--primary-medical);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .btn-submit:hover {
+            background: #004370;
+        }
+
+        /* Dashboard Bệnh Nhân */
+        #patientDashboard {
+            display: none;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: #f8fbff;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #dbe6f0;
+        }
+
+        .stat-box h4 {
+            margin: 0;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .stat-box p {
+            margin: 10px 0 0 0;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-medical);
+        }
+
+        /* Tối ưu hiển thị ảnh dạng Grid (Lưới) */
+        .image-history-container {
+            max-height: 500px;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            padding-right: 10px;
+        }
+
+        .image-card {
+            background: white;
+            border: 1px solid #dbe6f0;
+            border-radius: 10px;
+            padding: 12px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .image-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 91, 150, 0.1);
+        }
+
+        .image-card .time-badge {
+            background: #eef5fb;
+            color: var(--primary-medical);
+            padding: 5px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+            border: 1px solid #d1e3f3;
+        }
+
+        .img-wrapper {
+            width: 100%;
+            text-align: center;
+        }
+
+        .img-wrapper img {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #e1e8ed;
+            background: #f8fbff;
+            aspect-ratio: 1;
+            object-fit: cover;
+        }
+
+        /* Tùy chỉnh thanh cuộn */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #b8c8d8;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-medical);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- Khu vực Header có nút Thoát -->
+        <div class="header-bar">
+            <div>
+                <!-- Cập nhật thư mục chứa ảnh (ở đây mặc định là static) -->
+                <img src="{{ url_for('static', filename='images/logo_khoa.png')}}" alt="Logo Khoa Điện - Điện Tử"
+                    style="height: 85px; margin-bottom: 5px; object-fit: contain;">
+                <p style="margin: 0; font-size: 13px; color: var(--text-muted);"> Trang quản lý</p>
+            </div>
+            <a href="/logout"
+                style="background: #dc3545; color: white; padding: 8px 15px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 5px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                Thoát
+            </a>
+        </div>
+
+        <div>
+            <div class="card">
+                <h3 style="display: flex; align-items: center; gap: 8px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    Hồ Sơ Bệnh Nhân
+                </h3>
+                <input type="text" id="searchInput" class="search-box" placeholder="Tìm theo tên hoặc mã thiết bị..."
+                    onkeyup="filterPatients()">
+                <div class="patient-list" id="patientList">
+                    <p style="text-align: center; color: #888;">Đang tải dữ liệu...</p>
+                </div>
+            </div>
+
+            <div class="card" style="border-top: 4px solid var(--primary-medical);">
+                <h3 style="display: flex; align-items: center; gap: 8px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Phát Hành Cập Nhật (OTA)
+                </h3>
+                <p style="font-size: 13px; color: var(--text-muted);">Cập nhật phiên bản phần mềm cho mặt nạ.</p>
+                <div class="form-group">
+                    <label>Tên Phiên Bản (Version)</label>
+                    <input type="text" id="otaVersion" placeholder="VD: v2.0.1">
+                </div>
+                <div class="form-group">
+                    <label>Đường dẫn File (.bin)</label>
+                    <input type="url" id="otaUrl" placeholder="https://github.com/.../firmware.bin">
+                </div>
+                <button class="btn-submit" onclick="sendOTA()">Phát Hành Cập Nhật</button>
+            </div>
+        </div>
+
+        <div class="card" id="patientDashboard">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e1e8ed; padding-bottom: 15px; margin-bottom: 20px;">
+                <div>
+                    <h2 id="detailName" style="margin: 0; color: var(--primary-medical);">Tên Bệnh Nhân</h2>
+                    <p id="detailDevice" style="margin: 5px 0 0 0; font-size: 14px; color: var(--text-muted);">Mã thiết
+                        bị: --</p>
+                </div>
+                <div style="text-align: right;">
+                    <span
+                        style="background: #e8f5e9; color: #2e7d32; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; border: 1px solid #c8e6c9;">
+                        Hồ Sơ Đang Theo Dõi
+                    </span>
+                </div>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <h4>Tổng số lần điều trị</h4>
+                    <p id="totalScans">0</p>
+                </div>
+                <div class="stat-box">
+                    <h4>Tổng quan tiến triển</h4>
+                    <p id="progressTrend" style="color: #28a745;">--</p>
+                </div>
+            </div>
+
+            <h3>📉 Phân Tích Đáp Ứng Ánh Sáng (3 Màu)</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">
+                Biểu đồ thể hiện diện tích vùng da cần can thiệp bằng các loại ánh sáng LED theo thời gian.
+            </p>
+            <!-- Đã thu nhỏ chiều cao biểu đồ xuống 250px -->
+            <canvas id="progressChart" style="width: 100%; max-height: 250px; margin-bottom: 20px;"></canvas>
+
+            <div style="border-top: 2px solid #e1e8ed; padding-top: 20px;">
+                <h3 style="margin-bottom: 15px;">📸 Hồ Sơ Hình Ảnh</h3>
+                <div id="imageGallery" class="image-history-container">
+                    <!-- Ảnh sẽ được load bằng JS vào đây dưới dạng lưới (Grid) -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allPatients = [];
+        let chartInstance = null;
+
+        // 1. Tải danh sách
+        window.onload = async () => {
+            try {
+                const res = await fetch('/api/admin/patients');
+                const data = await res.json();
+                if (data.success) {
+                    allPatients = data.data;
+                    renderPatients(allPatients);
+                }
+            } catch (err) {
+                document.getElementById('patientList').innerHTML = '<p style="color:red">Lỗi tải dữ liệu.</p>';
+            }
+        };
+
+        function renderPatients(list) {
+            const container = document.getElementById('patientList');
+            container.innerHTML = '';
+
+            if (list.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color: #888;">Không tìm thấy bệnh nhân.</p>';
+                return;
+            }
+
+            list.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'patient-item';
+                div.innerHTML = `
+                    <div>
+                        <p class="p-name">${p.name}</p>
+                        <p class="p-device">Mã TB: ${p.device_id}</p>
+                    </div>
+                    <button class="btn-view" onclick="viewPatient('${p.username}', '${p.name}', '${p.device_id}')">Xem Hồ Sơ</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function filterPatients() {
+            const text = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allPatients.filter(p =>
+                p.name.toLowerCase().includes(text) ||
+                p.username.toLowerCase().includes(text) ||
+                p.device_id.toLowerCase().includes(text)
+            );
+            renderPatients(filtered);
+        }
+
+        // 2. Lấy dữ liệu 1 bệnh nhân
+        async function viewPatient(username, name, device_id) {
+            document.getElementById('patientDashboard').style.display = 'block';
+            document.getElementById('detailName').innerText = name;
+            document.getElementById('detailDevice').innerText = 'Mã thiết bị: ' + device_id;
+
+            try {
+                const res = await fetch(`/api/admin/patient_history/${username}`);
+                const data = await res.json();
+
+                if (data.success) {
+                    analyzeAndDrawChart(data.data);
+                    renderImageGallery(data.data);
+                }
+            } catch (err) {
+                console.error("Lỗi lấy lịch sử", err);
+            }
+        }
+
+        // 3. Thuật toán phân tích 3 MÀU LED
+        function analyzeAndDrawChart(historyData) {
+            let labels = [];
+            let blueData = [];  // Xanh dương (Mụn) - Mã 1
+            let redData = [];   // Đỏ (Viêm/HSV) - Mã 2
+            let greenData = []; // Xanh lục (Thư giãn/Phục hồi) - Mã 3
+
+            let dailyData = {};
+
+            // Gom nhóm theo ngày
+            historyData.forEach(session => {
+                let day = session.time.split(" ")[0];
+                if (!dailyData[day]) {
+                    dailyData[day] = { count: 0, blue: 0, red: 0, green: 0 };
+                }
+
+                dailyData[day].count += 1;
+                dailyData[day].blue += session.led_grid.filter(val => val === 1).length;
+                dailyData[day].red += session.led_grid.filter(val => val === 2).length;
+                dailyData[day].green += session.led_grid.filter(val => val === 3).length;
+            });
+
+            // Tính trung bình mỗi ngày
+            for (let day in dailyData) {
+                labels.push(day);
+                blueData.push((dailyData[day].blue / dailyData[day].count).toFixed(1));
+                redData.push((dailyData[day].red / dailyData[day].count).toFixed(1));
+                greenData.push((dailyData[day].green / dailyData[day].count).toFixed(1));
+            }
+
+            document.getElementById('totalScans').innerText = historyData.length;
+
+            // Đánh giá Tiến triển (Dựa trên TỔNG các vùng tổn thương của ngày đầu vs ngày cuối)
+            if (labels.length >= 2) {
+                let firstTotal = parseFloat(blueData[0]) + parseFloat(redData[0]) + parseFloat(greenData[0]);
+                let lastTotal = parseFloat(blueData[labels.length - 1]) + parseFloat(redData[labels.length - 1]) + parseFloat(greenData[labels.length - 1]);
+
+                if (firstTotal > 0) {
+                    if (lastTotal < firstTotal) {
+                        let percent = Math.round(((firstTotal - lastTotal) / firstTotal) * 100);
+                        document.getElementById('progressTrend').innerHTML = `Tích cực (Giảm ${percent}%)`;
+                        document.getElementById('progressTrend').style.color = "#28a745";
+                    } else {
+                        document.getElementById('progressTrend').innerHTML = "Cần theo dõi thêm";
+                        document.getElementById('progressTrend').style.color = "#d39e00";
+                    }
+                }
+            } else {
+                document.getElementById('progressTrend').innerHTML = "--";
+                document.getElementById('progressTrend').style.color = "#6c757d";
+            }
+
+            // Vẽ Chart 3 màu
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Vùng Mụn (Xanh Dương)',
+                            data: blueData,
+                            borderColor: '#007bff',
+                            backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Vùng Viêm (Đỏ)',
+                            data: redData,
+                            borderColor: '#dc3545',
+                            backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Vùng Nám (Xanh Lục)',
+                            data: greenData,
+                            borderColor: '#28a745',
+                            backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // Thêm dòng này để canvas tuân theo max-height
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    scales: {
+                        y: {
+                            title: { display: true, text: 'Diện tích (Số điểm LED)' },
+                            beginAtZero: true,
+                            grid: { color: '#e1e8ed' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 4. Hiển thị ảnh (Tối ưu thành dạng Grid)
+        function renderImageGallery(historyData) {
+            const container = document.getElementById('imageGallery');
+            container.innerHTML = '';
+
+            let reversedData = [...historyData].reverse();
+            let hasImage = false;
+
+            reversedData.forEach(session => {
+                // Kiểm tra xem lịch sử này có trường image_path không
+                if (session.image_path) {
+                    hasImage = true;
+                    const div = document.createElement('div');
+                    div.className = 'image-card';
+
+                    // Tạo URL gọi tới API của Flask để lấy ảnh
+                    const imageUrl = `/api/image?path=${encodeURIComponent(session.image_path)}`;
+
+                    div.innerHTML = `
+                        <div class="time-badge">⏱️ ${session.time}</div>
+                        <div class="img-wrapper">
+                            <img src="${imageUrl}" alt="Ảnh UNet" loading="lazy">
+                        </div>
+                    `;
+                    container.appendChild(div);
+                }
+            });
+
+            // Nếu không có ảnh, tắt chế độ Grid và hiện thông báo
+            if (!hasImage) {
+                container.style.display = 'block';
+                container.innerHTML = '<p style="text-align: center; color: #888; padding: 20px; background: white; border-radius: 8px; border: 1px dashed #cdd5dc;">Chưa có dữ liệu hình ảnh lâm sàng cho bệnh nhân này.</p>';
+            } else {
+                container.style.display = 'grid';
+            }
+        }
+
+        // 5. OTA
+        async function sendOTA() {
+            const version = document.getElementById('otaVersion').value.trim();
+            const url = document.getElementById('otaUrl').value.trim();
+
+            if (!version || !url) {
+                alert("Vui lòng nhập đầy đủ Version và Link OTA!");
+                return;
+            }
+
+            if (!confirm(`Xác nhận phát hành bản cập nhật ${version} cho toàn bộ thiết bị?`)) return;
+
+            try {
+                const res = await fetch('/api/admin/update_firmware', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ version, url })
+                });
+                const data = await res.json();
+                alert(data.message);
+
+                if (data.success) {
+                    document.getElementById('otaVersion').value = '';
+                    document.getElementById('otaUrl').value = '';
+                }
+            } catch (err) {
+                alert("Lỗi khi kết nối với máy chủ!");
+            }
+        }
+    </script>
+</body>
+
+</html>

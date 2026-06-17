@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Đăng Ký</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f0f2f5;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 25px;
+            color: #28a745;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+            background: #f9f9f9;
+        }
+
+        input:focus {
+            border-color: #28a745;
+            background: white;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #28a745;
+            /* Màu xanh lá */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background: #218838;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <h2>📝 Tạo Tài Khoản</h2>
+        <form method="POST">
+            <input type="text" name="username" placeholder="Tên tài khoản mới" required autocomplete="off">
+            <input type="password" name="password" placeholder="Mật khẩu" required>
+            <button type="submit">Đăng Ký</button>
+        </form>
+
+        {% if error %}
+        <div class="error">⚠️ {{ error }}</div>
+        {% endif %}
+
+        <div class="footer">
+            <a href="/login">← Quay lại Đăng nhập</a>
+        </div>
+    </div>
+</body>
+
+</html>

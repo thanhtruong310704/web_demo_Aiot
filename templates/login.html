@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-box {
+            background: white;
+            /* Giữ nguyên kích thước khung, căn chỉnh lại lề trong cho cân đối */
+            padding: 30px 35px 25px 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 360px;
+            /* Giữ nguyên chiều rộng tối đa */
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        /* --- LOGO --- */
+        .logo-container {
+            margin-bottom: 10px;
+        }
+
+        .logo-img {
+            max-width: 90px;
+            /* Thu nhỏ logo một chút để giống trong ảnh mẫu */
+            height: auto;
+        }
+
+        h2 {
+            color: #2c3e50;
+            /* Màu chữ tối và sang hơn */
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        /* Ô Nhập Liệu */
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            margin: 8px 0;
+            border: 1px solid #d1d5db;
+            /* Viền mỏng, màu xám nhạt */
+            border-radius: 8px;
+            /* Bo góc giống ảnh */
+            box-sizing: border-box;
+            background: #f9fafb;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        input:focus {
+            border-color: #0d6efd;
+            /* Đổi màu viền xanh khi nhấp vào */
+            background: white;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+        }
+
+        /* Nút Đăng Nhập Chính */
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background-color: #0d6efd;
+            /* Màu xanh Solid chuẩn như trong ảnh */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+            box-shadow: 0 2px 4px rgba(13, 110, 253, 0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            /* Xanh đậm hơn chút khi rê chuột */
+        }
+
+        /* Dải Phân Cách */
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+            color: #6b7280;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .divider:not(:empty)::before {
+            margin-right: 10px;
+        }
+
+        .divider:not(:empty)::after {
+            margin-left: 10px;
+        }
+
+        /* Nút Mạng Xã Hội */
+        .oauth-btn {
+            width: 100%;
+            padding: 11px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .google-btn {
+            background: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .google-btn:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+        }
+
+        .github-btn {
+            background: #333333;
+            /* Màu đen tối như ảnh mẫu */
+            color: white;
+            border: 1px solid #333333;
+        }
+
+        .github-btn:hover {
+            background: #242424;
+        }
+
+        .oauth-btn img,
+        .oauth-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Cảnh báo lỗi */
+        .error {
+            color: #dc3545;
+            background: #ffebee;
+            padding: 8px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        /* Link Đăng ký */
+        .link {
+            margin-top: 15px;
+            display: inline-block;
+            color: #0d6efd;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-box">
+
+        <!-- LOGO -->
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/ute_logo.png') }}" alt="HCMUTE Logo" class="logo-img">
+        </div>
+
+        <h2>Đăng Nhập</h2>
+        <form method="POST">
+            <input type="text" name="username" placeholder="Tên đăng nhập" required>
+            <input type="password" name="password" placeholder="Mật khẩu" required>
+            <button type="submit" class="btn-primary">Đăng Nhập</button>
+        </form>
+
+        <div class="divider">HOẶC</div>
+
+        <button type="button" id="google-login-btn" class="oauth-btn google-btn">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo">
+            Đăng nhập với Google
+        </button>
+        <button type="button" id="github-login-btn" class="oauth-btn github-btn">
+            <svg viewBox="0 0 24 24">
+                <path fill="currentColor"
+                    d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+            </svg>
+            Đăng nhập với GitHub
+        </button>
+
+        <div id="error-msg" class="error {% if error %}show{% endif %}">
+            ⚠️ {{ error if error else 'Có lỗi xảy ra!' }}
+        </div>
+
+        <a href="/register" class="link">Chưa có tài khoản? Đăng ký ngay</a>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, GithubAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB3SoKGLdXCL3XR2pJq3OSFXi1ADaZKPgY",
+            authDomain: "project1-98f90.firebaseapp.com",
+            databaseURL: "https://project1-98f90-default-rtdb.firebaseio.com",
+            projectId: "project1-98f90",
+            storageBucket: "project1-98f90.firebasestorage.app",
+            messagingSenderId: "230812422100",
+            appId: "1:230812422100:web:5f449252aa81522d725041",
+            measurementId: "G-E58VEQVY27"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const googleProvider = new GoogleAuthProvider();
+        const githubProvider = new GithubAuthProvider();
+
+        async function handleLoginSuccess(user, providerName) {
+            try {
+                const response = await fetch('/oauth_login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        uid: user.uid,
+                        email: user.email,
+                        displayName: user.displayName,
+                        provider: providerName
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    window.location.href = '/';
+                } else {
+                    showError(data.message);
+                }
+            } catch (error) {
+                showError("Lỗi hệ thống: " + error.message);
+            }
+        }
+
+        document.getElementById('google-login-btn').addEventListener('click', () => {
+            signInWithPopup(auth, googleProvider)
+                .then(result => handleLoginSuccess(result.user, 'google'))
+                .catch(error => showError("Đăng nhập Google thất bại: " + error.message));
+        });
+
+        document.getElementById('github-login-btn').addEventListener('click', () => {
+            signInWithPopup(auth, githubProvider)
+                .then(result => handleLoginSuccess(result.user, 'github'))
+                .catch(error => showError("Đăng nhập GitHub thất bại: " + error.message));
+        });
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-msg');
+            errorDiv.textContent = '⚠️ ' + message;
+            errorDiv.classList.add('show');
+        }
+    </script>
+</body>
+
+</html>

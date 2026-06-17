@@ -1,0 +1,24 @@
+<div id="customModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3 id="modalTitle" class="modal-title">Tùy Chỉnh Phác Đồ</h3>
+
+        <div style="text-align: left; margin-bottom: 15px;">
+            <label style="font-size: 14px; font-weight: bold; color: #555;">Độ sáng: <b id="modalVal"
+                    style="color:#007bff">10</b>%</label>
+            <input type="range" id="modalSlider" min="1" max="100" value="10"
+                oninput="document.getElementById('modalVal').innerText = this.value"
+                style="width: 100%; margin-top: 8px;">
+        </div>
+
+        <div style="text-align: left;">
+            <label style="font-size: 14px; font-weight: bold; color: #555;">Thời gian chiếu (phút):</label>
+            <input type="number" id="modalTime" min="1" max="60" value="15"
+                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; margin-top: 8px; font-family: inherit; font-size: 15px;">
+        </div>
+
+        <div class="modal-buttons">
+            <button class="modal-btn btn-cancel" onclick="dongModal()">Hủy</button>
+            <button class="modal-btn btn-confirm" onclick="xacNhanChayPhacDo()">Bật Mặt Nạ</button>
+        </div>
+    </div>
+</div>
