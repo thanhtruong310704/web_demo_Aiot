@@ -1,6 +1,6 @@
 import datetime
 from flask import Blueprint, request, jsonify, session, render_template
-from config.firebase_config import db_instance as db
+from services.firebase_config import db_instance as db
 
 admin_bp = Blueprint('admin', __name__)
 

@@ -1,6 +1,6 @@
 import os
 from flask import Blueprint, jsonify, session, send_file, request
-from config.firebase_config import db_instance as db
+from services.firebase_config import db_instance as db
 
 user_data_bp = Blueprint('user_data', __name__)
 

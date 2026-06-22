@@ -28,8 +28,6 @@ function veBieuDoVaDanhSach(historyData) {
     let mangNgay = Object.keys(thongKeNgay).sort(); let dataSoLan = []; let dataTongLED = [];
     mangNgay.forEach(ngay => { dataSoLan.push(thongKeNgay[ngay].soLanSuDung); dataTongLED.push(thongKeNgay[ngay].tongDiemLED); });
 
-    // ================= SỬA LỖI Ở ĐÂY =================
-    // 1. Tạo một mảng nhãn mới chỉ chứa Ngày/Tháng (Ví dụ: 24/05)
     let mangNgayNganGon = mangNgay.map(ngay => {
         let parts = ngay.split('-');
         return `${parts[2]}/${parts[1]}`; 
@@ -65,7 +63,6 @@ function veBieuDoVaDanhSach(historyData) {
             } 
         }
     });
-    // ===================================================
 
     // Phần render danh sách thẻ lịch sử bên dưới vẫn giữ nguyên mảng gốc để hiện đầy đủ Năm
     mangNgay.reverse().forEach(ngay => {

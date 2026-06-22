@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-# Trọng số phạt cho bài toán mất cân bằng lớp y tế
+# Trọng số phạt
 CLASS_WEIGHTS = tf.constant([0.05, 4.0, 5.0, 5.0], dtype=tf.float32)
 
 @tf.keras.utils.register_keras_serializable()

@@ -1,5 +1,5 @@
 from flask import Blueprint, request, render_template, redirect, url_for, session, jsonify
-from config.firebase_config import db_instance as db
+from services.firebase_config import db_instance as db
 
 auth_bp = Blueprint('auth', __name__)
 

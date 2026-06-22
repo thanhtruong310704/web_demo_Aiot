@@ -4,7 +4,7 @@ import random
 import datetime
 import paho.mqtt.client as mqtt
 # Import trực tiếp instance db mà ta vừa tạo ở trên
-from config.firebase_config import db_instance as db
+from services.firebase_config import db_instance as db
 
 def on_mqtt_message(client, userdata, msg):
     """
@@ -43,9 +43,6 @@ def setup_mqtt_client():
 mqtt_client = setup_mqtt_client()
 
 def send_control_command(device_id, led_grid, bright_grid, user_id):
-    """
-    Hàm Helper: Đồng bộ lệnh điều khiển xuống cả Phần cứng và Database
-    """
     checksum = sum(led_grid) + sum(bright_grid)
     
     # 1. Bắn lệnh xuống thiết bị qua MQTT

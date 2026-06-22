@@ -131,3 +131,133 @@ function capNhatHienThiGio() {
     let p = Math.floor(thoiGianConLai / 60); let s = thoiGianConLai % 60;
     document.getElementById('timerDisplay').innerText = (p < 10 ? "0" + p : p) + ":" + (s < 10 ? "0" + s : s);
 }
+function toggleChat() {
+  const chat = document.getElementById('chatbot-container');
+  chat.style.display = chat.style.display === 'none' ? 'flex' : 'none';
+}
+function appendMessage(text, sender) {
+
+  const chatBox = document.getElementById('chatbot-messages');
+
+  const msgDiv = document.createElement('div');
+
+  msgDiv.className = sender === 'user' ? 'user-msg' : 'bot-msg';
+
+  msgDiv.innerText = text;
+
+  chatBox.appendChild(msgDiv);
+
+  chatBox.scrollTop = chatBox.scrollHeight; // Tự động cuộn xuống cuối
+
+}
+async function sendMsg() {
+  const inputField = document.getElementById('ai-input');
+  const userText = inputField.value.trim();
+  if (!userText) return;
+
+  appendMessage(userText, 'user');
+  inputField.value = '';
+  appendMessage("Đang suy nghĩ...", 'bot');
+
+  // Dán Web App URL của Apps Script bạn vừa copy vào đây
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwxRWJAskI6jL1TfERDpQZQQI2rs2wW2a_PD1nX_yn5PBwPw08CUkSnbz9XVpLlkdxE/exec';
+  try {
+    const response = await fetch(APPS_SCRIPT_URL, {
+                  method: "POST",
+                // Dùng text/plain để vượt qua lỗi CORS Preflight của trình duyệt
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8"
+                },
+                body: JSON.stringify({ userText: userText })
+    });
+
+    const data = await response.json();
+    
+    // Xóa dòng chữ "Đang suy nghĩ..."
+    const chatBox = document.getElementById('chatbot-messages');
+    chatBox.removeChild(chatBox.lastChild);
+
+    if (data.error) {
+        console.error("Lỗi API Gemini:", data.error.message || data.error);
+        appendMessage("Lỗi xử lý: " + (data.error.message || data.error), 'bot');
+        return;
+    }
+
+    const aiReply = data.candidates[0].content.parts[0].text;
+    const action = JSON.parse(aiReply);
+    
+    // In ra Console để kiểm tra xem Bot gửi về cái gì (Nhấn F12 để xem)
+    console.log("Dữ liệu Bot trả về:", action);
+
+    if (action.minutes !== null && action.minutes !== undefined) {
+        let phut = parseInt(action.minutes);
+        console.log("Số phút bóc tách được:", phut);
+        
+        if (!isNaN(phut) && phut > 0) {
+            let timerSelect = document.getElementById('timerSelect');
+            
+            // Thêm số phút vào danh sách select nếu chưa có
+            if (!Array.from(timerSelect.options).some(opt => opt.value == phut)) {
+                timerSelect.add(new Option(`${phut} Phút`, phut));
+            }
+            timerSelect.value = phut;
+
+            // Dọn dẹp bộ đếm giờ cũ (nếu có)
+            if (typeof boDemGio !== 'undefined' && boDemGio !== null) {
+                clearInterval(boDemGio); 
+                boDemGio = null; 
+                document.getElementById('timerDisplay').style.display = 'none';
+                let btnStart = document.getElementById('btnStartTimer');
+                if (btnStart) {
+                    btnStart.innerText = 'Bắt Đầu';
+                    btnStart.style.background = '#28a745';
+                }
+            }
+
+            // Kích hoạt bộ đếm giờ mới
+            batDauHenGio();
+        } else {
+            console.log("Lỗi: Số phút không hợp lệ!");
+        }
+    }
+
+    if (action.color_code !== null && action.color_code !== undefined) {
+        if (typeof modeGrid !== 'undefined' && typeof brightGrid !== 'undefined') {
+            let opacityPercent = 100; // Mặc định độ sáng 100% khi bot bật
+
+            if (action.color_code === 0) {
+                modeGrid.fill(0);
+                brightGrid.fill(0);
+                opacityPercent = 0;
+            } else {
+                modeGrid.fill(action.color_code); 
+                brightGrid.fill(255);             
+            }
+            
+            const cells = document.querySelectorAll('#ledGrid .cell'); // Lấy danh sách các ô grid
+            for (let i = 0; i < 25; i++) {
+                if (cells[i]) {
+                    updateVisual(cells[i], modeGrid[i], opacityPercent);
+                }
+            }
+            
+            // Cập nhật thanh slider để giao diện đồng bộ với trạng thái mới
+            const slider = document.getElementById('slider');
+            const valDisplay = document.getElementById('val');
+            if (slider && valDisplay) {
+                slider.value = opacityPercent;
+                valDisplay.innerText = opacityPercent;
+            }
+            sendData(); 
+        }
+    }
+
+    if (action.text) {
+        appendMessage(action.text, 'bot');
+    }
+
+        } catch (error) {
+            console.error("Lỗi:", error);
+            appendMessage("Lỗi kết nối! Vui lòng thử lại.", 'bot');
+        }
+}

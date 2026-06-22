@@ -1,7 +1,7 @@
 import json
 import datetime
 from flask import Blueprint, request, jsonify, session
-from config.firebase_config import db_instance as db
+from services.firebase_config import db_instance as db
 from services.mqtt_service import mqtt_client, send_control_command
 
 device_bp = Blueprint('device', __name__)
@@ -78,6 +78,7 @@ def trigger_ota():
         mqtt_client.publish(f"devices/{device_id}/control", json.dumps({"start_ota_now": True, "ota_url": forced_url}), retain=True)
 
         db.reference(f'/devices/{device_id}').update({
+            'firmware_version': pending_version,
             'firmware_version_pending': pending_version,
             'last_user': user,
             'last_update': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
